@@ -11,7 +11,7 @@ import imageio
 import shutil
 import networkx as nx
 
-from utils import load_instance, edge_to_delta
+import utils
 from clemcore.backends import Model, CustomResponseModel
 from clemcore.clemgame import GameMaster, GameBenchmark, DialogueGameMaster, GameScorer, GameSpec
 from clemcore.clemgame import Player
@@ -57,7 +57,7 @@ class PathWalker(Player):
 class PathDescriber(Player):
     def __init__(self, model, game_instance):
         super().__init__(model)
-        instance_data = load_instance(game_instance)
+        instance_data = utils.load_instance(game_instance)
         self.imgs = instance_data["imgs"]
         self.nodes = instance_data["nodes"]
         self.edges = instance_data["edges"]
@@ -86,7 +86,7 @@ class PathDescriber(Player):
     
     def get_available_directions(self, node):
         moves = self.get_available_moves(node)
-        deltas = [edge_to_delta(move) for move in moves]
+        deltas = [utils.edge_to_delta(move) for move in moves]
         cardinals = [DELTA_TO_CARDINAL[delta] for delta in deltas]
         return cardinals
     
@@ -130,7 +130,7 @@ class MmMapWorldGraphs(DialogueGameMaster):
     
     def get_available_directions(self, node):
         moves = self.get_available_moves(node)
-        deltas = [edge_to_delta(move) for move in moves]
+        deltas = [utils.edge_to_delta(move) for move in moves]
         cardinals = [DELTA_TO_CARDINAL[delta] for delta in deltas]
         return cardinals
     
@@ -143,7 +143,7 @@ class MmMapWorldGraphs(DialogueGameMaster):
     def _on_setup(self, **game_instance):
         """" sets the information you specify in instances.json """
         self.game_instance = game_instance
-        instance_data = load_instance(self.game_instance)
+        instance_data = utils.load_instance(self.game_instance)
         self.imgs = instance_data["imgs"]
         self.nodes = instance_data["nodes"]
         self.edges = instance_data["edges"]
@@ -317,7 +317,7 @@ class MmMapWorldGraphs(DialogueGameMaster):
 class MM_MapWorldGraphsScorer(GameScorer):
     def __init__(self, game_name: str, experiment: Dict, game_instance: Dict):
         super().__init__(game_name, experiment, game_instance)
-        instance_data = load_instance(self.game_instance)
+        instance_data = utils.load_instance(self.game_instance)
         self.imgs = instance_data["imgs"]
         self.nodes = instance_data["nodes"]
         self.edges = instance_data["edges"]
