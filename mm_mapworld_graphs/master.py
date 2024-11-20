@@ -15,6 +15,7 @@ import utils
 from clemcore.backends import Model, CustomResponseModel
 from clemcore.clemgame import GameMaster, GameBenchmark, DialogueGameMaster, GameScorer, GameSpec
 from clemcore.clemgame import Player
+from clemcore.utils import file_utils
 from clemcore.clemgame.metrics import METRIC_ABORTED, METRIC_SUCCESS, METRIC_LOSE, BENCH_SCORE
 
 
@@ -741,3 +742,8 @@ class MmMapWorldGraphsBenchmark(GameBenchmark):
     
     def create_game_scorer(self, experiment: Dict, game_instance: Dict) -> GameScorer:
         return MM_MapWorldGraphsScorer(self.game_name, experiment, game_instance)
+    
+def main():
+    game_path = os.path.dirname(os.path.abspath(__file__))
+    experiments = file_utils.load_json("in/instances.json", game_path)
+
