@@ -1,3 +1,9 @@
+from clemcore.backends import Model, CustomResponseModel
+from clemcore.clemgame import GameMaster, GameBenchmark, Player, DialogueGameMaster, GameScorer, GameSpec
+from clemcore.clemgame.metrics import METRIC_ABORTED, METRIC_SUCCESS, METRIC_LOSE, BENCH_SCORE
+from utils import loop_identification, get_directions, string_available_directions, have_common_element, get_nextnode_label, count_word_in_sentence
+from clemcore.utils import file_utils, string_utils
+
 from typing import Dict, Tuple, List
 import json
 import numpy as np
@@ -6,12 +12,8 @@ import ast
 from queue import Queue
 from copy import deepcopy
 import random
-
-from clemcore.backends import Model, CustomResponseModel
-from clemcore.clemgame import GameMaster, GameBenchmark, Player, DialogueGameMaster, GameScorer, GameSpec
-from clemcore.clemgame.metrics import METRIC_ABORTED, METRIC_SUCCESS, METRIC_LOSE, BENCH_SCORE
-from utils import loop_identification, get_directions, string_available_directions, have_common_element, get_nextnode_label, count_word_in_sentence
-from clemcore.utils import file_utils, string_utils
+from logging import getLogger
+logger = getLogger(__name__)
 
 "°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°"
 INVALID = 0
