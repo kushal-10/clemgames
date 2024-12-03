@@ -59,7 +59,7 @@ class PathDescriber(Player):
 
     def check_path_answer(self, utterance: str, directions: List[str], node, saved_node) -> List[Dict]:
     
-        previous_direction = get_directions(node, directions, saved_node, self.graph_type)
+        previous_direction = get_directions_main(node, directions, saved_node, self.graph_type)
         previous_dirrection_changed =  string_available_directions(previous_direction) 
         previous_dirrection_no_pq = string_utils.remove_punctuation(previous_dirrection_changed)
         if not have_common_element(utterance, previous_dirrection_no_pq):
@@ -76,7 +76,7 @@ class PathDescriber(Player):
         if errors:
             error = errors[0]
             self.game_error = error
-            self.directions_next_node = get_directions(the_last_node, self.directions, the_last_node, self.graph_type )    
+            self.directions_next_node = get_directions_main(the_last_node, self.directions, the_last_node, self.graph_type )    
             self.directions_next_node = string_available_directions(self.directions_next_node)
             return "not valid"
         else:
@@ -84,7 +84,7 @@ class PathDescriber(Player):
             self.current_node = next_node_label
             if next_node_label in self.nodes:
                 self.visited_nodes.append(next_node_label)
-                list_directions_nextnode= get_directions(next_node_label, self.directions, self.current_node, self.graph_type)
+                list_directions_nextnode= get_directions_main(next_node_label, self.directions, self.current_node, self.graph_type)
                 self.directions_next_node = string_available_directions(list_directions_nextnode)
                 return True
             
@@ -167,7 +167,7 @@ class Textmapworld(DialogueGameMaster):
             if self.ambiguity != None:
                 initial_directions = self.initial_position.split("_")[0]
             self.playerA_initial_prompt = self.playerA_initial_prompt.replace("$INITIAL_ROOM$", initial_directions)
-        self.initial_directions= get_directions(self.initial_position, self.directions, self.initial_position, self.graph_type )
+        self.initial_directions= get_directions_main(self.initial_position, self.directions, self.initial_position, self.graph_type )
         self.changed_initial_directions = string_available_directions(self.initial_directions)
         self.playerA_initial_prompt = self.playerA_initial_prompt.replace("$INITIAL_DIRECTIONS$",self.changed_initial_directions)
         self.add_user_message(self.guesser, self.playerA_initial_prompt)
