@@ -32,9 +32,9 @@ experiments = {"small": (4,"cycle_false"), "medium": (6, "cycle_false"), "large"
 prompt_file_name = 'PromptNamedGame.template' if game_type == "named_graph" else 'PromptUnnamedGame.template'
 prompt_file_name = os.path.join('resources', 'initial_prompts', prompt_file_name)
 
-with open(os.path.join("..", "clemgames", "textmapworld", 'resources', 'initial_prompts', "answers.json")) as json_file:
+with open(os.path.join('..', 'clemgames', 'textmapworld', 'textmapworld_main', 'resources', 'initial_prompts', "answers.json")) as json_file:
     answers_file = json.load(json_file)
-with open(os.path.join("..", "clemgames", "textmapworld", 'resources', 'initial_prompts', "reminders.json")) as json_file:
+with open(os.path.join('..', 'clemgames', 'textmapworld', 'textmapworld_main', 'resources', 'initial_prompts', "reminders.json")) as json_file:
     reminders_file = json.load(json_file)
 "-------------------------------------------------------------------------------------------------------------"
 
@@ -56,7 +56,7 @@ class GraphGameInstanceGenerator(GameInstanceGenerator):
             experiment = self.add_experiment(key)
             size, cycle_type = value
             created_name= generate_filename(game_type, size, cycle_type, ambiguity)
-            file_graphs = os.path.join("games", "textmapworld", 'files', created_name)
+            file_graphs = os.path.join('..', 'clemgames', 'textmapworld', 'textmapworld_main', 'files', created_name)
             if not create_new_graphs:
                 if not os.path.exists(file_graphs):
                     raise ValueError("New graphs are not created, but the file does not exist. Please set create_new_graphs to True.")
@@ -92,6 +92,17 @@ class GraphGameInstanceGenerator(GameInstanceGenerator):
                         game_instance["Mapping"] = str(grid["Mapping"])
                     game_instance["Strict"] = strict
                     game_id += 1
+
+    def generate(self, filename="instances.json", **kwargs):
+        """Generate the game benchmark and store the instances JSON file.
+        Intended to not be modified by inheriting classes, modify on_generate instead.
+        Args:
+            filename: The name of the instances JSON file to be stored in the 'in' subdirectory. Defaults to
+                'instances.json'.
+            kwargs: Keyword arguments (or dict) to pass to the on_generate method.
+        """
+        self.on_generate(**kwargs)
+        self.store_file(self.instances, filename, sub_dir=os.path.join("..", "in"))
 
                         
 
