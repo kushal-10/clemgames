@@ -17,7 +17,7 @@ logger = getLogger(__name__)
 import sys
 import os
 sys.path.append(os.path.abspath('../clemgames/textmapworld'))
-from textmapworld_utils import loop_identification, get_directions, string_available_directions, have_common_element, get_nextnode_label, count_word_in_sentence
+from textmapworld_utils import loop_identification, get_directions_main, string_available_directions, have_common_element, get_nextnode_label, count_word_in_sentence
 
 
 "°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°"
