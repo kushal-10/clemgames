@@ -141,13 +141,6 @@ def loop_identification(visited_nodes):
 "----------------------------------------------------"
 "The functions used in instance_generator.py"
 
-#Create a networkx graph from the given graph data.
-def create_graph(nodes, edges):
-    G = nx.Graph()
-    G.add_nodes_from(nodes)
-    G.add_edges_from(edges)
-    return G
-
 # Function to get nodes at a certain distance from the initial node
 def get_nodes_at_distance(graph, initial_node, distance):
     return [node for node in nx.single_source_shortest_path_length(graph, initial_node) if nx.single_source_shortest_path_length(graph, initial_node)[node] == distance]
@@ -163,6 +156,41 @@ def select_nodes_at_distances(G, initial_position, max_distance):
         else:
             print(f"No nodes found at distance {distance} from {initial_position}")
     return chosen_nodes
+
+def lowercase_list_strings(original_list):
+    return [item.lower() for item in original_list]
+
+def lowercase_tuple_strings(original_list, type):
+    if type == "generated":
+        combined_list = [value for sublist in original_list.values() for value in sublist]
+        return [(item[0].lower(), item[1].lower()) for item in combined_list]
+    elif type == "original":
+        return [(item[0].lower(), item[1].lower()) for item in original_list]
+    elif type == "none":
+        return original_list
+    
+def create_graph(nodes, edges, type):
+    G = nx.Graph()
+    if type == "generated" or type == "original":
+        nodes= lowercase_list_strings(nodes)
+    edges= lowercase_tuple_strings(edges, type)
+    G.add_nodes_from(nodes)
+    for edge in edges:
+        if len(edge) == 2:
+            G.add_edge(edge[0], edge[1])
+    return G
+
+    
+def normalize(distance):
+        normalized_distance = 1 / (1 + np.exp(-0.5 * distance))
+        normalized_distance = 2*(normalized_distance - 0.5)
+        return normalized_distance
+    
+def calculate_similarity(graph1, graph2):
+    distance = nx.graph_edit_distance(graph1, graph2)
+    normalized_distance = normalize(distance)
+    similarity = 1 - normalized_distance
+    return similarity
 
 def count_word_in_sentence(sentence, word):
     # Split the sentence into words
