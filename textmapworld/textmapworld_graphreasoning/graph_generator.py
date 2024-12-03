@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import time
 import networkx as nx
 import os
+
 game_name = "textmapworld_graphreasoning"
 
 class SaveGraphInfo:

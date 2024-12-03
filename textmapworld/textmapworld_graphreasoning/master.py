@@ -1,7 +1,6 @@
 from clemcore.backends import Model, CustomResponseModel
 from clemcore.clemgame import GameMaster, GameBenchmark, Player, DialogueGameMaster, GameScorer, GameSpec
 from clemcore.clemgame.metrics import METRIC_ABORTED, METRIC_SUCCESS, METRIC_LOSE, BENCH_SCORE
-from utils import loop_identification, get_directions, string_available_directions, have_common_element, get_nextnode_label, calculate_similarity, create_graph
 from clemcore.utils import file_utils, string_utils
 
 from typing import Dict, Tuple, List
@@ -14,6 +13,12 @@ import re
 import random
 from logging import getLogger
 logger = getLogger(__name__)
+
+import sys
+import os
+sys.path.append(os.path.abspath('../clemgames/textmapworld'))
+from textmapworld_utils import loop_identification, get_directions, string_available_directions, have_common_element, get_nextnode_label, calculate_similarity, create_graph
+
 
 INVALID = 0
 
@@ -477,7 +482,7 @@ class GraphGameBenchmark(GameBenchmark):
 
 def main():
     # select one experiment and instance
-    experiments = file_utils.load_json("in/instances.json", "textmapworld_graphreasoning")
+    experiments = file_utils.load_json("in/instances_graphreasoning.json", "textmapworld")
     experiment_1 = experiments["experiments"][0]
     game_1 = experiment_1["game_instances"]
     master = Graphreasoning(experiment_1, ["mock", "mock"])
