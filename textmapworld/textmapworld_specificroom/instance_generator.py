@@ -31,10 +31,11 @@ distances = {"on": [0], "close": [1,2], "far": [3,4]}
 "°°°°°°°imported parameters°°°°°°°"
 prompt_file_name = 'PromptNamedGame.template' if game_type == "named_graph" else 'PromptUnnamedGame.template'
 prompt_file_name = os.path.join('resources', 'initial_prompts', prompt_file_name)
+game_name = "textmapworld_specificroom"
 
-with open(os.path.join('..', 'clemgames', 'textmapworld', 'textmapworld_specificroom', 'resources', 'initial_prompts', "answers.json")) as json_file:
+with open(os.path.join('..', 'clemgames', 'textmapworld', game_name, 'resources', 'initial_prompts', "answers.json")) as json_file:
     answers_file = json.load(json_file)
-with open(os.path.join('..', 'clemgames', 'textmapworld', 'textmapworld_specificroom', 'resources', 'initial_prompts', "reminders.json")) as json_file:
+with open(os.path.join('..', 'clemgames', 'textmapworld', game_name, 'resources', 'initial_prompts', "reminders.json")) as json_file:
     reminders_file = json.load(json_file)
 "-------------------------------------------------------------------------------------------------------------"
 
@@ -46,14 +47,14 @@ class GraphGameInstanceGenerator(GameInstanceGenerator):
     def on_generate(self):
 
         created_name= generate_filename(game_type, size, cycle_type, ambiguity)
-        file_graphs = os.path.join('..', 'clemgames', 'textmapworld', 'textmapworld_specificroom', 'files', created_name)
+        file_graphs = os.path.join('..', 'clemgames', 'textmapworld', game_name, 'files', created_name)
         if not create_new_graphs:
             if not os.path.exists(file_graphs):
                 raise ValueError("New graphs are not created, but the file does not exist. Please set create_new_graphs to True.")
         else:
             if os.path.exists(file_graphs):
                 raise ValueError("The file already exists, please set create_new_graphs to False.")
-            create_graphs_file(file_graphs, instance_number, game_type, n, m, size, cycle_type, ambiguity)
+            create_graphs_file(file_graphs, instance_number, game_type, n, m, size, cycle_type, ambiguity, game_name)
         game_id = 0
         player_a_prompt_header =  self.load_template(prompt_file_name)
         Player2_positive_answer = answers_file["PositiveAnswerNamedGame"] 
