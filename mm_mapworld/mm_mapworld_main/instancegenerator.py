@@ -1,7 +1,11 @@
 from clemcore.clemgame import GameInstanceGenerator
+import sys
+import os
+sys.path.append(os.path.abspath('../clemgames/mm_mapworld'))
+from mm_mapworld_maps import AbstractMap
+
 import numpy as np
 import networkx as nx
-from maps import AbstractMap
 import os
 import random
 import json
@@ -19,12 +23,12 @@ CAPTIONS = True
 RANDOM_PATH = 'random_test_images'
 IMAGE_PATH = os.path.join("resources", "images")
 if CAPTIONS:
-    DATASET_PATH = os.path.join("resources", "ade_20k_reduced", "ade_imgs")
-    MAPPING_PATH = os.path.join("resources", "ade_20k_reduced", "cats.json")
+    DATASET_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k_reduced", "ade_imgs")
+    MAPPING_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k_reduced", "cats.json")
 else:
-    DATASET_PATH = os.path.join("resources", "ade_20k", "needed_imgs")
-    MAPPING_PATH = os.path.join("resources", "ade_20k", "ade_cat_instances.json")
-TEMP_IMAGE_PATH = os.path.join("resources", "images")
+    DATASET_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k", "needed_imgs")
+    MAPPING_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k", "ade_cat_instances.json")
+TEMP_IMAGE_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "images")
 MOVE_CONSTRUCTION = "GO: "
 STOP_CONSTRUCTION = "DONE"
 RESPONSE_REGEX = "^\{[\s]*\"description\":\s*\"([^\{]*?)\"\s*,\s*\"action\":\s*\"([^\{]*?)\"[\s]*\}$"
@@ -163,6 +167,18 @@ class MmMapWorldInstanceGenerator(GameInstanceGenerator):
                  instance["done_regex"] = DONE_REGEX
                  instance["move_regex"] = MOVE_REGEX
                  game_id += 1
+
+    def generate(self, filename="instances.json", **kwargs):
+        """Generate the game benchmark and store the instances JSON file.
+        Intended to not be modified by inheriting classes, modify on_generate instead.
+        Args:
+            filename: The name of the instances JSON file to be stored in the 'in' subdirectory. Defaults to
+                'instances.json'.
+            kwargs: Keyword arguments (or dict) to pass to the on_generate method.
+        """
+        self.on_generate(**kwargs)
+        self.store_file(self.instances, filename, sub_dir=os.path.join("..", "in"))
+
 
 if __name__ == '__main__':
     # always call this, which will actually generate and save the JSON file

@@ -2,8 +2,7 @@ from clemcore.clemgame import GameInstanceGenerator
 import sys
 import os
 sys.path.append(os.path.abspath('../clemgames/mm_mapworld'))
-# sys.path.append(os.path.abspath('../clemgames/mm_mapworld/mm_mapworld_graphs'))
-from maps import AbstractMap
+from mm_mapworld_maps import AbstractMap
 
 import numpy as np
 import os
@@ -22,7 +21,7 @@ SEED = 42
 RANDOM_PATH = "random_test_images"
 IMAGE_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "images")
 DATASET_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k_reduced", "ade_imgs")
-MAPPING_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k_reduced", "cats.json")
+MAPPING_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k_reduced", "captions.json")
 TEMP_IMAGE_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "images")
 MOVE_CONSTRUCTION = "GO: "
 STOP_CONSTRUCTION = "DONE"
@@ -65,8 +64,12 @@ def assign_images(nodes):
     imgs = {}
     cat_mapping = {}
     for i in range(len(nodes)):
-        cat_mapping[nodes[i]] = chosen_cats[i].split("/")[0]
-        node_img = np.random.choice(mapping[chosen_cats[i]])
+        if nodes[i] in cat_mapping:
+            cat_mapping[nodes[i]].append(chosen_cats[i])
+        else:
+            cat_mapping[nodes[i]] = [chosen_cats[i]]
+
+        node_img = np.random.choice(cat_mapping[nodes[i]])
         after_copy_path = copy_image(os.path.join(DATASET_PATH, node_img))
         imgs[nodes[i]] = after_copy_path
     return imgs, cat_mapping
