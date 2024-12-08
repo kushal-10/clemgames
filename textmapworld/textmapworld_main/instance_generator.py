@@ -2,7 +2,11 @@ import os
 import json
 
 from clemcore.clemgame import GameInstanceGenerator
-from utils import load_check_graph, generate_filename, create_graphs_file 
+import sys
+import os
+sys.path.append(os.path.abspath('../clemgames/textmapworld'))
+from textmapworld_utils import load_check_graph, generate_filename, create_graphs_file
+
 
 
 "Enter the parameters for the game instance generator"
