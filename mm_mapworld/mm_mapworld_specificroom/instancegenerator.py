@@ -1,6 +1,10 @@
 from clemcore.clemgame import GameInstanceGenerator
+import sys
+import os
+sys.path.append(os.path.abspath('../clemgames/mm_mapworld'))
+from mm_mapworld_maps import AbstractMap
+
 import numpy as np
-from maps import AbstractMap
 import os
 import random
 import json
@@ -17,11 +21,11 @@ SIZES = {"small": 4, "medium": 6, "large": 8}
 DISTS = {"on": [0], "close": [1,2], "far": [3,4]}
 SEED = 42
 RANDOM_PATH = 'random_test_images'
-IMAGE_PATH = os.path.join('resources', 'images')
+IMAGE_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "images")
 # The dataset annotation is in english, making the language agnostic is going to be more challenging
-MAPPING_PATH = os.path.join("resources", "ade_20k", "ade_cat_instances.json")
-DATASET_PATH = os.path.join("resources", "ade_20k", "needed_imgs")
-TEMP_IMAGE_PATH = os.path.join("resources", "images")
+DATASET_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k_reduced", "ade_imgs")
+MAPPING_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k_reduced", "cats.json")
+TEMP_IMAGE_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "images")
 RESPONSE_REGEX = "^\{[\s]*\"description\":\s*\"([^\{]*?)\"\s*,\s*\"action\":\s*\"([^\{]*?)\"[\s]*\}$"
 MOVE_CONSTRUCTION = "GO: "
 FOUND_REGEX = "^DONE$"
@@ -73,17 +77,17 @@ def assign_images(nodes, target, num_targets = 1):
     target_cat = np.random.choice(cats_inside)
     cats_inside.remove(target_cat)
     target_img = np.random.choice(mapping[target_cat])
-    after_copy_path = copy_image(os.path.join(DATASET_PATH, target_img))
+    after_copy_path = copy_image(os.path.join(DATASET_PATH, target_cat, target_img))
     imgs = {target: after_copy_path}
-    cat_mapping = {target: target_cat.split("/")[1]}
+    cat_mapping = {target: target_cat}
     for node in nodes:
         if node == target:
             continue
         node_cat = np.random.choice(cats_inside)
         node_img = np.random.choice(mapping[node_cat])
-        after_copy_path = copy_image(os.path.join(DATASET_PATH, node_img))
+        after_copy_path = copy_image(os.path.join(DATASET_PATH, node_cat, node_img))
         imgs[node] = after_copy_path
-        cat_mapping[node] = node_cat.split("/")[1]
+        cat_mapping[node] = node_cat
     return imgs, cat_mapping
     
 
@@ -156,6 +160,17 @@ class MmMapWorldInstanceGenerator(GameInstanceGenerator):
                  instance["move_regex"] = MOVE_REGEX
                  instance["response_regex"] = RESPONSE_REGEX
                  game_id += 1
+
+    def generate(self, filename="instances_specificroom.json", **kwargs):
+        """Generate the game benchmark and store the instances JSON file.
+        Intended to not be modified by inheriting classes, modify on_generate instead.
+        Args:
+            filename: The name of the instances JSON file to be stored in the 'in' subdirectory. Defaults to
+                'instances.json'.
+            kwargs: Keyword arguments (or dict) to pass to the on_generate method.
+        """
+        self.on_generate(**kwargs)
+        self.store_file(self.instances, filename, sub_dir=os.path.join("..", "in"))
 
 if __name__ == '__main__':
     # always call this, which will actually generate and save the JSON file

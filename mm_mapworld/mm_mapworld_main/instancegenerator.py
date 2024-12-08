@@ -24,10 +24,10 @@ RANDOM_PATH = 'random_test_images'
 IMAGE_PATH = os.path.join("resources", "images")
 if CAPTIONS:
     DATASET_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k_reduced", "ade_imgs")
-    MAPPING_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k_reduced", "cats.json")
+    MAPPING_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k_reduced", "captions.json")
 else:
-    DATASET_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k", "needed_imgs")
-    MAPPING_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k", "ade_cat_instances.json")
+    DATASET_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k_reduced", "ade_imgs")
+    MAPPING_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "ade_20k_reduced", "cats.json")
 TEMP_IMAGE_PATH = os.path.join("..", "clemgames", "mm_mapworld", "mm_mapworld_main", "resources", "images")
 MOVE_CONSTRUCTION = "GO: "
 STOP_CONSTRUCTION = "DONE"
@@ -86,14 +86,19 @@ def assign_images(nodes):
     imgs = {}
     cat_mapping = {}
     for i in range(len(nodes)):
-        node_img = np.random.choice(mapping[chosen_cats[i]])
         if CAPTIONS:
-            cat_mapping[nodes[i]] = chosen_cats[i]
-            after_copy_path = copy_image(os.path.join(DATASET_PATH, chosen_cats[i], node_img))
+            if nodes[i] in cat_mapping:
+                cat_mapping[nodes[i]].append(chosen_cats[i])
+            else:
+                cat_mapping[nodes[i]] = [chosen_cats[i]]
+
+            node_img = np.random.choice(cat_mapping[nodes[i]])
+            after_copy_path = copy_image(os.path.join(DATASET_PATH, node_img))
             imgs[nodes[i]] = after_copy_path
         else:
-            cat_mapping[nodes[i]] = chosen_cats[i].split("/")[1]
-            after_copy_path = copy_image(os.path.join(DATASET_PATH, node_img))
+            node_img = np.random.choice(mapping[chosen_cats[i]])
+            cat_mapping[nodes[i]] = chosen_cats[i]
+            after_copy_path = copy_image(os.path.join(DATASET_PATH, chosen_cats[i], node_img))
             imgs[nodes[i]] = after_copy_path
     return imgs, cat_mapping
 
