@@ -173,17 +173,6 @@ class MmMapWorldGraphsInstanceGenerator(GameInstanceGenerator):
                     instance["move_regex"] = MOVE_REGEX
                     game_id += 1
 
-    def generate(self, filename="instances_graphs.json", **kwargs):
-        """Generate the game benchmark and store the instances JSON file.
-        Intended to not be modified by inheriting classes, modify on_generate instead.
-        Args:
-            filename: The name of the instances JSON file to be stored in the 'in' subdirectory. Defaults to
-                'instances.json'.
-            kwargs: Keyword arguments (or dict) to pass to the on_generate method.
-        """
-        self.on_generate(**kwargs)
-        self.store_file(self.instances, filename, sub_dir=os.path.join("..", "in"))
-
 
 if __name__ == '__main__':
     # always call this, which will actually generate and save the JSON file
