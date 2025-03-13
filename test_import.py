@@ -1,3 +1,6 @@
+import importlib
+
+
 def import_method(method_path: str):
     """
     Import the method from the specified module path.
