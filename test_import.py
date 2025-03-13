@@ -22,5 +22,5 @@ def import_method(method_path: str):
         raise ImportError(f"Could not import method '{method_name}' from module '{module_path}'. Error: {e}") from e
 
 # Test the import
-method = import_method("clemcore.backends.multimodal_utils.generate_internvl2_prompt_text")
+method = import_method("backends.multimodal_utils.generate_internvl2_prompt_text")
 print(method)
